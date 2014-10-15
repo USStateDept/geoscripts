@@ -43,9 +43,23 @@ with open(INPUTFILE, 'rb') as csvinput:
             if DEBUG:
                 print g.lat, g.lng
         else:
-            successdict['fails'] += 1
-            print "there was an error with", dictedinput['Address'] + "," + dictedinput['City'] + "," + dictedinput['State'] + "," + dictedinput['Zip Code']
-            tempoutput.append(row + ["x", "x"])
+            g = geocoder.google(dictedinput['Address'] + "," + dictedinput['City'] + "," + dictedinput['State'] + "," + dictedinput['Zip Code'])
+            if g.lat and g.lng:
+                tempoutput.append(row + [g.lat, g.lng])
+                successdict['success'] += 1
+                if DEBUG:
+                    print g.lat, g.lng
+            else:
+                g = geocoder.osm(dictedinput['Address'] + "," + dictedinput['City'] + "," + dictedinput['State'] + "," + dictedinput['Zip Code'])
+                if g.lat and g.lng:
+                    tempoutput.append(row + [g.lat, g.lng])
+                    successdict['success'] += 1
+                    if DEBUG:
+                        print g.lat, g.lng
+                else:
+                    successdict['fails'] += 1
+                    print "there was an error with", dictedinput['Address'] + "," + dictedinput['City'] + "," + dictedinput['State'] + "," + dictedinput['Zip Code']
+                    tempoutput.append(row + ["x", "x"])
         # if DEBUG:
         #     if counter > LIMIT:
         #         break
