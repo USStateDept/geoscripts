@@ -66,6 +66,7 @@ def getCoord( street_address ):
 	locality = ""
 	locality1 = ""
 	locality2 = ""
+	locality3 = ""
 	administrative_area = ""
 	country = ""
 		
@@ -78,11 +79,15 @@ def getCoord( street_address ):
 		
 	elif street_address.count(',') == 2:
 		locality, administrative_area, country = (street_address.split(','))
-		components = '&components=locality:' + locality.strip().replace(' ','%20').replace(',','') + "|administrative_area:" + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		components = '&components=locality:' + locality.strip().replace(' ','%20').replace(',','') + "|administrative_area_level_1:" + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
 		
 	elif street_address.count(',') == 3:
 		locality1, locality2, administrative_area, country = (street_address.split(','))
-		components = '&components=locality:' + locality1.strip().replace(' ','%20').replace(',','') + locality2.strip().replace(' ','%20').replace(',','') + "|administrative_area:" + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		components = '&components=locality:' + locality1.strip().replace(' ','%20').replace(',','') + "|administrative_area_level_2:" + locality2.strip().replace(' ','%20').replace(',','') + "%20County" + "|administrative_area_level_1:" + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		
+	elif street_address.count(',') == 4:
+		locality1, locality2, locality3, administrative_area, country = (street_address.split(','))
+		components = '&components=locality:' + locality1.strip().replace(' ','%20').replace(',','') + '%20' + locality3.strip().replace(' ','%20').replace(',','') + "%20County" + "|administrative_area_level_2:" + locality3.strip().replace(' ','%20').replace(',','') + "|administrative_area_level_1:" + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
 		
 	url = ( URL_PART_1 + clean_street_address + components + URL_PART_2 )
 	
@@ -119,6 +124,7 @@ def getReducedCoord( street_address ):
 	locality = ""
 	locality1 = ""
 	locality2 = ""
+	locality3 = ""
 	administrative_area = ""
 	country = ""
 		
@@ -132,13 +138,18 @@ def getReducedCoord( street_address ):
 			
 	elif reduce_street_address.count(',') == 2:
 		locality, administrative_area, country = (reduce_street_address.split(','))
-		components = '&components=administrative_area:' + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		components = '&components=administrative_area_level_1:' + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
 		url = ( URL_PART_1 + administrative_area.strip().replace(' ','%20') + '%20' + country.strip().replace(' ','%20') + components + URL_PART_2 )
 			
 	elif reduce_street_address.count(',') == 3:
 		locality1, locality2, administrative_area, country = (reduce_street_address.split(','))
-		components = '&components=locality:' + locality2.strip().replace(' ','%20').replace(',','') + '|administrative_area:' + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		components = '&components=administrative_area_level_2:' + locality2.strip().replace(' ','%20').replace(',','') + "%20County" + '|administrative_area_level_1:' + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
 		url = ( URL_PART_1 + locality2.strip().replace(' ','%20') + '%20' + administrative_area.strip().replace(' ','%20') + '%20' + country.strip().replace(' ','%20') + components + URL_PART_2 )
+	
+	elif street_address.count(',') == 4:
+		locality1, locality2, locality3, administrative_area, country = (street_address.split(','))
+		components = '&components=locality:' + locality2.strip().replace(' ','%20').replace(',','') + '|administrative_area_level_2:' + locality3.strip().replace(' ','%20').replace(',','') + "%20County" + '|administrative_area_level_1:' + administrative_area.strip().replace(' ','%20').replace(',','') + "|country:" + country.strip().replace(' ','%20').replace(',','').replace('\n','')
+		url = ( URL_PART_1 + locality2.strip().replace(' ','%20') + '%20' + locality3.strip().replace(' ','%20') + '%20' + administrative_area.strip().replace(' ','%20') + '%20' + country.strip().replace(' ','%20') + components + URL_PART_2 )
 	
 	# Makes the API call and returns data
 	try:
